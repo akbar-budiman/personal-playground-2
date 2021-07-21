@@ -1,0 +1,21 @@
+type User {
+  name: String!
+  age: Int!
+  address: String
+  searchable: String
+}
+
+type Query {
+  user(name: String): User!
+}
+
+input NewUser {
+  name: String!
+  age: Int!
+  address: String
+  searchable: String
+}
+
+type Mutation {
+  addUser(input: NewUser!): User  !
+}

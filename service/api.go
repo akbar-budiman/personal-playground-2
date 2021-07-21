@@ -1,4 +1,4 @@
-package main
+package service
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/akbar-budiman/personal-playground-2/entity"
 	"github.com/gorilla/mux"
 )
 
@@ -36,7 +37,7 @@ func addUserEvent(w http.ResponseWriter, r *http.Request) {
 
 func addUserDirect(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
-	var user User
+	var user entity.User
 	json.Unmarshal(reqBody, &user)
 
 	AddOrReplaceUser(&user)

@@ -1,10 +1,11 @@
-package main
+package service
 
 import (
 	"context"
 	"fmt"
 	"log"
 
+	"github.com/akbar-budiman/personal-playground-2/entity"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -57,7 +58,7 @@ func InitializeLocalCrdbDdl() {
 	fmt.Println("Local CRDB DDL initialized")
 }
 
-func GetUser(name string) []User {
+func GetUser(name string) []entity.User {
 	dbpool, err := pgxpool.ConnectConfig(context.Background(), CrdbConfig)
 	if err != nil {
 		log.Fatal(err)
@@ -72,9 +73,9 @@ func GetUser(name string) []User {
 	}
 	defer rows.Close()
 
-	var users []User
+	var users []entity.User
 	for rows.Next() {
-		var u User
+		var u entity.User
 		err := rows.Scan(&u.Name, &u.Age, &u.Address)
 		if err != nil {
 			log.Fatal(err)
@@ -89,7 +90,7 @@ func GetUser(name string) []User {
 	return users
 }
 
-func InsertUser(user *User) {
+func InsertUser(user *entity.User) {
 	dbpool, err := pgxpool.ConnectConfig(context.Background(), CrdbConfig)
 	if err != nil {
 		log.Fatal(err)
@@ -108,7 +109,7 @@ func InsertUser(user *User) {
 	}
 }
 
-func UpdateUser(name string, user *User) {
+func UpdateUser(name string, user *entity.User) {
 	dbpool, err := pgxpool.ConnectConfig(context.Background(), CrdbConfig)
 	if err != nil {
 		log.Fatal(err)

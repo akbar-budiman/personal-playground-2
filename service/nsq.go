@@ -1,9 +1,10 @@
-package main
+package service
 
 import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/akbar-budiman/personal-playground-2/entity"
 	"github.com/nsqio/go-nsq"
 )
 
@@ -31,7 +32,7 @@ func ProduceNewUserEvent(userData []byte) {
 type NewUserConsumer struct{}
 
 func (h *NewUserConsumer) HandleMessage(m *nsq.Message) error {
-	var newObj User
+	var newObj entity.User
 	json.Unmarshal(m.Body, &newObj)
 
 	AddOrReplaceUser(&newObj)
