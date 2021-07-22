@@ -79,7 +79,13 @@ func InsertData(esUser *entity.EsUser) {
 	}
 }
 
-func FindDataBySearchKey(searchKey string) []entity.EsUser {
+func FindDataBySearchKey(searchKey string) []*entity.EsUser {
+	searchResult := findDataToEs(searchKey)
+	response := convertToStruct(searchResult)
+	return response
+}
+
+func findDataToEs(searchKey string) *elastic.SearchResult {
 	searchSource := elastic.NewSearchSource()
 	searchSource.Query(elastic.NewMatchQuery("searchable", searchKey))
 
@@ -88,18 +94,20 @@ func FindDataBySearchKey(searchKey string) []entity.EsUser {
 	searchResult, err := searchService.Do(MyEsContext)
 	if err != nil {
 		panic(err)
+	} else {
+		return searchResult
 	}
+}
 
-	totalHits := searchResult.Hits.TotalHits.Value
-	var response = make([]entity.EsUser, totalHits)
-
+func convertToStruct(searchResult *elastic.SearchResult) []*entity.EsUser {
+	var response = []*entity.EsUser{}
 	for _, hit := range searchResult.Hits.Hits {
 		var esUser entity.EsUser
 		err := json.Unmarshal(hit.Source, &esUser)
 		if err != nil {
 			panic(err)
 		}
-		response = append(response, esUser)
+		response = append(response, &esUser)
 	}
 
 	return response

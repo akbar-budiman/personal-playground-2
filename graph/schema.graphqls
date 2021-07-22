@@ -7,6 +7,7 @@ type User {
 
 type Query {
   user(name: String): User!
+  userBySearchKey(searchKey: String): [User]!
 }
 
 input NewUser {

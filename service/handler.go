@@ -43,7 +43,7 @@ func addUserToCockroachDb(user *entity.User) {
 	InsertUser(user)
 }
 
-func GetCertainUserHandler(name string) entity.User {
+func GetCertainUserHandler(name string) *entity.User {
 	foundUserRedis := getCertainUserFromRedis(name)
 	if foundUserRedis != nil {
 		var foundUser entity.User
@@ -51,13 +51,13 @@ func GetCertainUserHandler(name string) entity.User {
 		if errJson != nil {
 			panic(errJson)
 		}
-		return foundUser
+		return &foundUser
 	}
 
 	foundUser := getCertainUserFromCockroachDb(name)
 
 	if foundUser.Name != "" {
-		addUserToRedis(&foundUser)
+		addUserToRedis(foundUser)
 	}
 
 	return foundUser
@@ -72,11 +72,23 @@ func getCertainUserFromRedis(name string) []byte {
 	}
 }
 
-func getCertainUserFromCockroachDb(name string) entity.User {
+func getCertainUserFromCockroachDb(name string) *entity.User {
 	usersFound := GetUser(name)
 	if len(usersFound) > 0 {
-		return usersFound[0]
+		return &usersFound[0]
 	} else {
-		return entity.User{}
+		return &entity.User{}
 	}
+}
+
+func GetCertainUsersBySearchKey(searchKey *string) []*entity.User {
+	esUsers := es.FindDataBySearchKey(*searchKey)
+
+	var users = []*entity.User{}
+	for _, esUser := range esUsers {
+		user := GetCertainUserHandler(esUser.Name)
+		users = append(users, user)
+	}
+
+	return users
 }
