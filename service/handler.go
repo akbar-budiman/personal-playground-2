@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 
 	"github.com/akbar-budiman/personal-playground-2/entity"
+	"github.com/akbar-budiman/personal-playground-2/es"
 )
 
 func AddOrReplaceUser(user *entity.User) {
 	addUserToRedis(user)
 	addOrReplaceUserToCockroachDb(user)
+	addOrReplaceUserToElasticSearch(user)
 }
 
 func addUserToRedis(user *entity.User) {
@@ -26,6 +28,11 @@ func addOrReplaceUserToCockroachDb(user *entity.User) {
 	} else {
 		addUserToCockroachDb(user)
 	}
+}
+
+func addOrReplaceUserToElasticSearch(user *entity.User) {
+	esUser := user.NewEsUser()
+	es.InsertData(esUser)
 }
 
 func replaceUserInCockroachDb(name string, user *entity.User) {

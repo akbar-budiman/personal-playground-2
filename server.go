@@ -7,6 +7,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/akbar-budiman/personal-playground-2/es"
 	"github.com/akbar-budiman/personal-playground-2/graph"
 	"github.com/akbar-budiman/personal-playground-2/graph/generated"
 	"github.com/akbar-budiman/personal-playground-2/service"
@@ -18,6 +19,9 @@ var (
 )
 
 func main() {
+	es.InitializeEsClient()
+	es.InitializeIndex()
+
 	service.InitializeLocalRedisConnectionPool(redisAddress)
 
 	service.InitializeLocalCrdbPool()
