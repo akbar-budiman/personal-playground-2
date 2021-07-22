@@ -1,5 +1,7 @@
 package entity
 
+import "github.com/akbar-budiman/personal-playground-2/graph/model"
+
 type User struct {
 	Name       string `json:"name"`
 	Age        int    `json:"age"`
@@ -10,6 +12,15 @@ type User struct {
 type EsUser struct {
 	Name       string `json:"name"`
 	Searchable string `json:"searchable"`
+}
+
+func (e *User) NewModelUser() *model.User {
+	return &model.User{
+		Name:       e.Name,
+		Age:        e.Age,
+		Address:    &e.Address,
+		Searchable: &e.Searchable,
+	}
 }
 
 func (e *User) NewEsUser() *EsUser {

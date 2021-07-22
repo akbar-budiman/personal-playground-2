@@ -32,18 +32,9 @@ func (r *queryResolver) User(ctx context.Context, name *string) (*model.User, er
 	userFound := service.GetCertainUserHandler(*name)
 
 	if userFound.Name != "" {
-		return New(&userFound), nil
+		return userFound.NewModelUser(), nil
 	} else {
 		return &model.User{}, nil
-	}
-}
-
-func New(e *entity.User) *model.User {
-	return &model.User{
-		Name:       e.Name,
-		Age:        e.Age,
-		Address:    &e.Address,
-		Searchable: &e.Searchable,
 	}
 }
 
