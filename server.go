@@ -14,7 +14,7 @@ import (
 
 var (
 	redisAddress = "localhost:6379"
-	defaultPort  = "8080"
+	defaultPort  = "8090"
 )
 
 func main() {

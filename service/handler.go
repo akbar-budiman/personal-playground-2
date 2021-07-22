@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/akbar-budiman/personal-playground-2/entity"
 )
@@ -22,7 +21,6 @@ func addUserToRedis(user *entity.User) {
 
 func addOrReplaceUserToCockroachDb(user *entity.User) {
 	userFound := getCertainUserFromCockroachDb(user.Name)
-	fmt.Println("userFound:", userFound)
 	if userFound.Name != "" {
 		replaceUserInCockroachDb(userFound.Name, user)
 	} else {
@@ -69,7 +67,6 @@ func getCertainUserFromRedis(name string) []byte {
 
 func getCertainUserFromCockroachDb(name string) entity.User {
 	usersFound := GetUser(name)
-	fmt.Println("len(rowsFound):", len(usersFound))
 	if len(usersFound) > 0 {
 		return usersFound[0]
 	} else {

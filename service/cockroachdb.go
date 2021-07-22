@@ -50,7 +50,7 @@ func InitializeLocalCrdbDdl() {
 	}
 	defer dbpool.Close()
 
-	createTableQuery := "CREATE TABLE IF NOT EXISTS users (name VARCHAR PRIMARY KEY, age INT, address VARCHAR);"
+	createTableQuery := "CREATE TABLE IF NOT EXISTS users (name VARCHAR PRIMARY KEY, age INT, address VARCHAR, searchable VARCHAR);"
 	if _, err := dbpool.Exec(context.Background(), createTableQuery); err != nil {
 		log.Fatal(err)
 	}
@@ -66,7 +66,6 @@ func GetUser(name string) []entity.User {
 	defer dbpool.Close()
 
 	query := fmt.Sprintf("SELECT * FROM users WHERE name='%s';", name)
-	fmt.Println("query:", query)
 	rows, err := dbpool.Query(context.Background(), query)
 	if err != nil {
 		log.Fatal(err)
@@ -76,7 +75,7 @@ func GetUser(name string) []entity.User {
 	var users []entity.User
 	for rows.Next() {
 		var u entity.User
-		err := rows.Scan(&u.Name, &u.Age, &u.Address)
+		err := rows.Scan(&u.Name, &u.Age, &u.Address, &u.Searchable)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -98,10 +97,11 @@ func InsertUser(user *entity.User) {
 	defer dbpool.Close()
 
 	query := fmt.Sprintf(
-		"INSERT INTO users(name, age, address) VALUES('%s', %d, '%s');",
+		"INSERT INTO users(name, age, address, searchable) VALUES('%s', %d, '%s', '%s');",
 		user.Name,
 		user.Age,
 		user.Address,
+		user.Searchable,
 	)
 
 	if _, err := dbpool.Exec(context.Background(), query); err != nil {
@@ -117,9 +117,10 @@ func UpdateUser(name string, user *entity.User) {
 	defer dbpool.Close()
 
 	query := fmt.Sprintf(
-		"UPDATE users SET age=%d, address='%s' WHERE name='%s';",
+		"UPDATE users SET age=%d, address='%s', searchable='%s' WHERE name='%s';",
 		user.Age,
 		user.Address,
+		user.Searchable,
 		user.Name,
 	)
 
