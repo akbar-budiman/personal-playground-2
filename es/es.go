@@ -87,7 +87,13 @@ func FindDataBySearchKey(searchKey string) []*entity.EsUser {
 
 func findDataToEs(searchKey string) *elastic.SearchResult {
 	searchSource := elastic.NewSearchSource()
-	searchSource.Query(elastic.NewMatchQuery("searchable", searchKey))
+	searchSource.Query(
+		elastic.
+			NewMatchQuery("searchable", searchKey).
+			MinimumShouldMatch("100%"),
+	)
+
+	fmt.Println(searchSource.Source())
 
 	searchService := MyEsClient.Search().Index(EsIndexName).SearchSource(searchSource)
 
