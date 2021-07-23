@@ -20,18 +20,29 @@ var (
 		  "analysis": {
 			"analyzer": {
 			  "my_analyzer": {
-				"tokenizer": "my_tokenizer"
+				"tokenizer": "my_tokenizer",
+				"filter": "lowercase"
 			  }
 			},
 			"tokenizer": {
 			  "my_tokenizer": {
 				"type": "ngram",
+				"min_gram": 2,
+				"max_gram": 2,
 				"token_chars": [
 				  "letter"
 				]
 			  }
 			}
 		  }
+		},
+		"mappings": {
+			"properties": {
+				"searchable": {
+					"type": "text",
+					"analyzer": "my_analyzer"
+				}
+			}
 		}
 	  }
 	`
@@ -92,8 +103,6 @@ func findDataToEs(searchKey string) *elastic.SearchResult {
 			NewMatchQuery("searchable", searchKey).
 			MinimumShouldMatch("100%"),
 	)
-
-	fmt.Println(searchSource.Source())
 
 	searchService := MyEsClient.Search().Index(EsIndexName).SearchSource(searchSource)
 
